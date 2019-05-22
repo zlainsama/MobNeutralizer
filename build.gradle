@@ -1,0 +1,63 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+version = "1.12.2-v1"
+group= "lain.mods.neutralizer"
+archivesBaseName = "MobNeutralizer"
+
+sourceCompatibility = targetCompatibility = "1.8"
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.8"
+}
+
+minecraft {
+    version = "1.12.2-14.23.5.2768"
+    runDir = "run"
+
+    mappings = "snapshot_20171003"
+}
+
+processResources
+{
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from 'LICENSE.txt'
+	
+    from(sourceSets.main.resources.srcDirs)
+    {
+        include 'mcmod.info'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs)
+    {
+        exclude 'mcmod.info'
+    }
+}
+
+task signJar(type: SignJar, dependsOn: reobfJar) {
+    onlyIf {
+        project.hasProperty('mcModsStore')
+    }
+
+    if (project.hasProperty('mcModsStore')) {
+        keyStore = project.mcModsStore
+        alias = project.mcModsAlias
+        storePass = project.mcModsStorePass
+        keyPass = project.mcModsKeyPass
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
+    }
+}
+
+build.dependsOn signJar
