@@ -14,12 +14,6 @@ public class MobNeutralizer
     @Mod.Instance("mobneutralizer")
     public static MobNeutralizer instance;
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void onPlayerVisibilityCheck(PlayerEvent.Visibility event)
-    {
-        event.modifyVisibility(0D);
-    }
-
     public static void setDisabled()
     {
         MinecraftForge.EVENT_BUS.unregister(instance);
@@ -34,6 +28,12 @@ public class MobNeutralizer
     public void init(FMLInitializationEvent event)
     {
         setEnabled();
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onPlayerVisibilityCheck(PlayerEvent.Visibility event)
+    {
+        event.modifyVisibility(0D);
     }
 
 }
