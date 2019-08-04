@@ -3,37 +3,26 @@ package lain.mods.neutralizer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(modid = "mobneutralizer", useMetadata = true, acceptedMinecraftVersions = "[1.12, 1.13)", acceptableRemoteVersions = "*", certificateFingerprint = "aaaf83332a11df02406e9f266b1b65c1306f0f76")
+@Mod("mobneutralizer")
 public class MobNeutralizer
 {
 
-    @Mod.Instance("mobneutralizer")
-    public static MobNeutralizer instance;
-
-    public static void setDisabled()
+    public MobNeutralizer()
     {
-        MinecraftForge.EVENT_BUS.unregister(instance);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
     }
 
-    public static void setEnabled()
-    {
-        MinecraftForge.EVENT_BUS.register(instance);
-    }
-
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event)
-    {
-        setEnabled();
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onPlayerVisibilityCheck(PlayerEvent.Visibility event)
+    private void onPlayerVisibilityCheck(PlayerEvent.Visibility event)
     {
         event.modifyVisibility(0D);
+    }
+
+    private void setup(FMLCommonSetupEvent event)
+    {
+        MinecraftForge.EVENT_BUS.addListener(this::onPlayerVisibilityCheck);
     }
 
 }

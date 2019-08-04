@@ -1,0 +1,21 @@
+modLoader="javafml"
+loaderVersion="[25,)"
+issueTrackerURL="https://github.com/zlainsama/mobneutralizer/issues"
+displayURL="https://github.com/zlainsama/mobneutralizer"
+#logoFile=""
+credits=""
+authors="zlainsama"
+[[mods]]
+modId="mobneutralizer"
+version="${file.jarVersion}"
+displayName="MobNeutralizer"
+#updateJSONURL=""
+description='''
+Make normally hostile mobs neutral to players by making players invisible to said mobs
+'''
+[[dependencies.mobneutralizer]]
+modId="forge"
+mandatory=true
+versionRange="[25,)"
+ordering="NONE"
+side="BOTH"
