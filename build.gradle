@@ -1,11 +1,10 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -13,18 +12,23 @@ apply plugin: 'eclipse'
 
 import net.minecraftforge.gradle.common.task.SignJar
 
-version = "1.14.4-v1"
-group= "lain.mods.neutralizer"
+import java.nio.file.Files
+
+version = "1.16.5-v1"
+group = "lain.mods.neutralizer"
 archivesBaseName = "MobNeutralizer"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'snapshot', version: '20190719-1.14.3'
+    mappings channel: 'official', version: '1.16.5'
 }
 
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.0.40'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
 }
 
 processResources {
@@ -33,28 +37,37 @@ processResources {
 
 jar {
     manifest {
-        attributes(["Specification-Title": "MobNeutralizer",
-                    "Specification-Vendor": "zlainsama",
-                    "Specification-Version": "1",
-                    "Implementation-Title": project.name,
-                    "Implementation-Version": "${version}",
-                    "Implementation-Vendor" :"zlainsama",
+        attributes(["Specification-Title"     : "MobNeutralizer",
+                    "Specification-Vendor"    : "zlainsama",
+                    "Specification-Version"   : "1",
+                    "Implementation-Title"    : project.name,
+                    "Implementation-Version"  : "${version}",
+                    "Implementation-Vendor"   : "zlainsama",
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
     }
 }
 
+jar.finalizedBy('reobfJar')
+
 task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
-        project.hasProperty('mcModsStore')
+        System.getenv('SIGNJAR_KEYSTORE') != null
     }
 
-    if (project.hasProperty('mcModsStore')) {
-        keyStore = project.mcModsStore
-        alias = project.mcModsAlias
-        storePass = project.mcModsStorePass
-        keyPass = project.mcModsKeyPass
+    if (System.getenv('SIGNJAR_KEYSTORE') != null) {
+        keyStore = Files.createTempFile(getTemporaryDir().toPath(), 'keystore-', '.jks').toString()
+        file(keyStore).withOutputStream { output ->
+            output.write(Base64.getDecoder().decode(System.getenv('SIGNJAR_KEYSTORE')))
+        }
+        alias = System.getenv('SIGNJAR_ALIAS')
+        storePass = System.getenv('SIGNJAR_STOREPASS')
+        keyPass = System.getenv('SIGNJAR_KEYPASS')
         inputFile = jar.archivePath
         outputFile = jar.archivePath
+    }
+
+    doLast {
+        delete keyStore
     }
 }
 
