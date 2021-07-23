@@ -17,6 +17,6 @@ Make normally hostile mobs neutral to players by making players invisible to sai
 [[dependencies.mobneutralizer]]
 modId="forge"
 mandatory=true
-versionRange="[25,)"
+versionRange="[37.0.0,)"
 ordering="NONE"
 side="SERVER"
