@@ -23,8 +23,8 @@ public class MobNeutralizer {
 
     private void onLivingVisibilityCheck(LivingEvent.LivingVisibilityEvent event) {
         if (event.getLookingEntity() instanceof Enemy)
-            if (event.getEntityLiving() instanceof ServerPlayer)
-                if (!(event.getEntityLiving() instanceof FakePlayer))
+            if (event.getEntity() instanceof ServerPlayer)
+                if (!(event.getEntity() instanceof FakePlayer))
                     event.modifyVisibility(0.0D);
     }
 
