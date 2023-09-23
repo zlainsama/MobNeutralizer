@@ -13,8 +13,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class MobNeutralizer {
 
     public MobNeutralizer() {
-//        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (v, n) -> true));
-
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
     }
 
