@@ -11,8 +11,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod("mobneutralizer")
 public class MobNeutralizer {
 
-    public MobNeutralizer() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+    public MobNeutralizer(FMLJavaModLoadingContext context) {
+        context.getModEventBus().addListener(this::setup);
     }
 
     private void onLivingVisibilityCheck(LivingEvent.LivingVisibilityEvent event) {
